@@ -1,6 +1,5 @@
 const app = require('express')();
 const server = app.listen(8080);
-const { lookup } = require('dns');
 const path = require('path');
 
 app.get('/', (req, res) => {
@@ -10,54 +9,72 @@ app.get('/', (req, res) => {
 const io = require('socket.io')(server);
 
 let players = {}
+let characters = {}
+
+class Character {
+    constructor() {
+        this.speed = 5;
+        this.damage = 5;
+        this.hit = 5;
+    }
+}
 
 class Player {
     constructor() {
         this.health = 100;
+
+        this.controller = {
+            w: 0,
+            a: 0,
+            s: 0, 
+            d: 0
+        }
 
         this.position = {
             x: 0,
             y: 0
         }
 
-        this.speed = 5;
+        this.character = 0;
+    }
+    
+    // use extensive commands
+    // functionsn are not carried over
+    input(key, action) {
+        this.controller[`${key}`] = action;
     }
 
-    move(key) {
-        switch(key) {
-            case 'w':
-                this.position.y += this.speed
-                break;
-            case 'a':
-                this.position.x -= this.speed
-                break;
-            case 's':
-                this.position.y -= this.speed;
-                break;
-            case 'd':
-                this.position.x += this.speed;
-                break;
-            default:
-                break;
-        }
+    update() {
+        if(this.controller.w) this.position.y -= 5;
+        if(this.controller.a) this.position.x -= 5;
+        if(this.controller.s) this.position.y += 5;
+        if(this.controller.d) this.position.x += 5;
     }
 }
 
 io.on('connection', socket => {
-    players[`${socket.id}`] = new Player(socket.id);
-    
+    const player = new Player();
+
+    players[`${socket.id}`] = player;
+
     socket.on('disconnect', () => {
         delete players[`${socket.id}`];
     })
 
-    socket.on('input', (key) => {
-        players[`${socket.id}`].move(key);
+    socket.on('input', (key, action) => {
+        player.input(key, action);
     })
 });
 
 function loop() {
     io.emit('render', players);
-    setTimeout(loop, 1000);
+
+    // Iterate over all the players
+    Object.entries(players).forEach(([id, player]) => {
+        player.update();
+    });
+
+    setTimeout(loop, 15);
 }
 
 loop();

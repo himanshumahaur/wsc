@@ -4,18 +4,38 @@
 <head>
     <title>Document</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 
 <body>
+    <canvas></canvas>
     <script>
+        const canvas = document.querySelector('canvas');
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        const ctx = canvas.getContext('2d');
+
         const socket = io('http://localhost:8080');
-        
+
+        // render(data) or update
+        // meanwhile render with animation
         socket.on('render', (players) => {
-            console.log(players[`${socket.id}`].position.x)
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            Object.entries(players).forEach(([id, player]) => {
+                ctx.fillRect(player.position.x, player.position.y, 10, 10);
+            });
         })
 
+        // input ------> server
         addEventListener('keydown', (e) => {
-            socket.emit('input', e.key);
+            socket.emit('input', e.key, 1);
+        })
+        addEventListener('keyup', (e) => {
+            socket.emit('input', e.key, 0);
         })
     </script>
 </body>
