@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "express": "^4.21.1",
+    "socket.io": "^4.8.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "wsc",
+  "version": "1.0.0",
+  "description": "web socket controller",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/himanshumahaur/wsc.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "himanshumahaur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/himanshumahaur/wsc/issues"
+  },
+  "homepage": "https://github.com/himanshumahaur/wsc#readme"
+}

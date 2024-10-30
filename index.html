@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Document</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const socket = io('http://localhost:8080');
+        
+        socket.on('render', (players) => {
+            console.log(players[`${socket.id}`].position.x)
+        })
+
+        addEventListener('keydown', (e) => {
+            socket.emit('input', e.key);
+        })
+    </script>
+</body>
+
+</html>
