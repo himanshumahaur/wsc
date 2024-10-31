@@ -1,10 +1,11 @@
 {
   "dependencies": {
     "express": "^4.21.1",
+    "nodemon": "^3.1.7",
     "socket.io": "^4.8.1"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "name": "wsc",
   "version": "1.0.0",

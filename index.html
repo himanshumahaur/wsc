@@ -15,18 +15,30 @@
     <canvas></canvas>
     <script>
         const canvas = document.querySelector('canvas');
-        canvas.width = innerWidth;
-        canvas.height = innerHeight;
         const ctx = canvas.getContext('2d');
 
         const socket = io('http://localhost:8080');
 
+        let characters;
+
+        // socket initialize
+        socket.on('initialize', (config, cData) => {
+            canvas.width = config.width;
+            canvas.height = config.height;
+
+            characters = cData;
+        })
+
         // render(data) or update
         // meanwhile render with animation
         socket.on('render', (players) => {
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            console.log(characters)
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
             Object.entries(players).forEach(([id, player]) => {
                 ctx.fillRect(player.position.x, player.position.y, 10, 10);
+                console.log(player.action);
             });
         })
 
